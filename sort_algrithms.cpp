@@ -1,10 +1,13 @@
 //sort algorithms
 //author: garrickw
 //
+//
 //all:
 //quik_sort
 //bubble_sort
 //insertion_sort
+//selection_sort
+//merge_sort
 
 #include <iostream>
 #include <vector>
@@ -103,6 +106,46 @@ void   insertion_sort2(vector<int> &a)
 }
 
 
+void selection_sort(vector<int> &a)
+{
+    int n = (int)a.size();
+    int min_idx;
+    for(int i=0; i<n-1; i++)
+    {
+        min_idx = i;
+        for(int j=i+1; j<n; j++)
+            if(a[j] < a[min_idx])
+                min_idx = j;
+        swap(a[min_idx], a[i]);
+    }
+}
+
+
+void merge_sort_recursive(vector<int> &a, vector<int> &aux, int left, int right)
+{
+    if(left >= right)
+        return;
+    int m = left + (right - left)/2;
+    merge_sort_recursive(a, aux, left, m);
+    merge_sort_recursive(a, aux, m+1, right);
+    
+    int i = left, j = m+1, k = left;
+    while(i <= m && j <=right)
+        aux[k++] = a[i] <= a[j] ? a[i++] : a[j++];
+    while(i <= m)
+        aux[k++] = a[i++];
+    while(j <= right)
+        aux[k++] = a[j++];
+        
+    for(k=left; k<=right; k++)
+        a[k] = aux[k];
+}
+
+void merge_sort(vector<int> &a)
+{
+    vector<int> aux(a.size());
+    merge_sort_recursive(a, aux, 0, a.size()-1);
+}
 
 //return true if the array is sorted in asc
 bool sorted(const vector<int> &a)
@@ -121,7 +164,7 @@ void print_array(const vector<int> &a)
     cout<<endl;
 }
 
-// int main()
+//int main()
 // {
 //     vector<int> a;
 //     int n = 1000;
@@ -131,7 +174,8 @@ void print_array(const vector<int> &a)
 //     //bubble_sort(a);
 //     //insertion_sort(a);
 //     //insertion_sort2(a);
-//     print_array(a);
+//     //selection_sort(a);
+//     //merge_sort(a);
 //     if(sorted(a))
 //         cout<<"correct!"<<endl;
 //     else cout<<"unsorted!"<<endl;
