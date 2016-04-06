@@ -8,6 +8,7 @@
 //insertion_sort
 //selection_sort
 //merge_sort
+//shell_sort
 
 #include <iostream>
 #include <vector>
@@ -145,6 +146,21 @@ void merge_sort(vector<int> &a)
 {
     vector<int> aux(a.size());
     merge_sort_recursive(a, aux, 0, a.size()-1);
+}
+
+
+void shell_sort(vector<int> &a)
+{
+	int temp, j;
+    int len = a.size();
+	for (int gap = len >> 1; gap > 0; gap >>= 1)
+		for (int i = gap; i < len; i++)
+        {
+			temp = a[i];
+			for (j = i - gap; j >= 0 && a[j] > temp; j -= gap)
+				a[j + gap] = a[j];
+			a[j + gap] = temp;
+		}
 }
 
 //return true if the array is sorted in asc
