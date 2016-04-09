@@ -9,6 +9,7 @@
 //selection_sort
 //merge_sort
 //shell_sort
+//heap_sort
 
 #include <iostream>
 #include <vector>
@@ -23,14 +24,14 @@ int partition(vector<int> &a, int l, int r)
     while(j<r-1)
     {
         // put all elements, which <= m, to the left, so the remained, which > m , are on the right side.
-        if(a[j] <= m)   
+        if(a[j] <= m)
         {
             swap(a[i],a[j]);
             i++;
         }
         j++;
     }
-    swap(a[i], a[r-1]); 
+    swap(a[i], a[r-1]);
     return i;
 }
 
@@ -129,7 +130,7 @@ void merge_sort_recursive(vector<int> &a, vector<int> &aux, int left, int right)
     int m = left + (right - left)/2;
     merge_sort_recursive(a, aux, left, m);
     merge_sort_recursive(a, aux, m+1, right);
-    
+
     int i = left, j = m+1, k = left;
     while(i <= m && j <=right)
         aux[k++] = a[i] <= a[j] ? a[i++] : a[j++];
@@ -137,7 +138,7 @@ void merge_sort_recursive(vector<int> &a, vector<int> &aux, int left, int right)
         aux[k++] = a[i++];
     while(j <= right)
         aux[k++] = a[j++];
-        
+
     for(k=left; k<=right; k++)
         a[k] = aux[k];
 }
@@ -163,6 +164,50 @@ void shell_sort(vector<int> &a)
 		}
 }
 
+
+void down_adjust(vector<int> &a, int n, int k)
+{
+    int max_idx, right;
+    while(k <= n/2-1)
+    {
+        max_idx = 2 * k + 1;
+        right = 2 * k + 2;
+        if(right < n && a[max_idx] < a[right])
+            max_idx = right;
+        if(a[max_idx] > a[k])
+        {
+            swap(a[max_idx], a[k]);
+            k = max_idx;
+        }
+        else
+            return;
+    }
+}
+
+void make_heap(vector<int> &a, int n)
+{
+    int k = n / 2 - 1;
+    for(; k >= 0; k--)
+        down_adjust(a, n, k);
+}
+
+void heap_sort(vector<int> &a)
+{
+    int n = a.size();
+    if(n <= 1)
+        return;
+    make_heap(a, n);
+
+    //loop n-1 times
+    for(int i = 0; i < n - 1; i++)
+    {
+        swap(a[0], a[n-i-1]);
+        down_adjust(a, n-i-1, 0);
+    }
+}
+
+
+
 //return true if the array is sorted in asc
 bool sorted(const vector<int> &a)
 {
@@ -180,20 +225,21 @@ void print_array(const vector<int> &a)
     cout<<endl;
 }
 
-//int main()
-// {
-//     vector<int> a;
-//     int n = 1000;
-//     for(int i=0; i<n; i++)
-//         a.push_back(rand()%10000);
-//     //quick_sort(a, 0, a.size()); 
-//     //bubble_sort(a);
-//     //insertion_sort(a);
-//     //insertion_sort2(a);
-//     //selection_sort(a);
-//     //merge_sort(a);
-//     if(sorted(a))
-//         cout<<"correct!"<<endl;
-//     else cout<<"unsorted!"<<endl;
-// }
-
+int main()
+{
+    vector<int> a;
+    int n = 1000;
+    for(int i=0; i<n; i++)
+        a.push_back(rand()%10000);
+    //quick_sort(a, 0, a.size());
+    //bubble_sort(a);
+    //insertion_sort(a);
+    //insertion_sort2(a);
+    //selection_sort(a);
+    //merge_sort(a);
+    heap_sort(a);
+    print_array(a);
+    if(sorted(a))
+        cout<<"correct!"<<endl;
+    else cout<<"unsorted!"<<endl;
+}
